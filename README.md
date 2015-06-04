@@ -1,4 +1,4 @@
-# Liste-e-Alberi
+# Liste-ed-Alberi
 
 In questa repository ho messo tutti gli esercizi relativi a liste ed alberi
 
