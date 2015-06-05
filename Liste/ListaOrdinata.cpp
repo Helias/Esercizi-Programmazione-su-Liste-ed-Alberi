@@ -1,8 +1,8 @@
 /*
  * Coded By Helias
  *
- * Lista Semplice Ordinata
- */
+ * Lista Semplice realizzata con le classi
+*/
 #include <iostream>
 using namespace std;
 

@@ -2,7 +2,7 @@
  * Coded By Helias
  *
  * Lista Doppia Circolare
- */
+*/
 #include <iostream>
 using namespace std;
 
@@ -31,8 +31,8 @@ class List
 		void remove(int val);
 		void printList();
 		void search(int val);
-		bool isEmpty() { return head == NULL; }
-		bool isFull() { return ( !isEmpty() ); }
+		bool isEmpty();
+		bool isFull() { return !(isEmpty()); }
 	private:
 		Node *head;
 };
@@ -49,6 +49,13 @@ List :: ~List()
 		delete aux;
 	}
 	delete tmp;
+}
+
+bool List :: isEmpty()
+{
+	if(head == NULL)
+		return true;
+	return false;
 }
 	
 void List :: insert(int val)

@@ -3,7 +3,7 @@
  *
  * Lista Doppia
  * Dalla "Lista Semplice" cambiano solamente le funzioni remove() e insert(), e le classi
- */
+*/
 #include <iostream>
 using namespace std;
 
@@ -32,8 +32,8 @@ class List
 		void remove(int val);
 		void printList();
 		void search(int val);
-		bool isEmpty() { return head == NULL; }
-		bool isFull() { return ( !isEmpty() ); }
+		bool isEmpty();
+		bool isFull() { return !(isEmpty()); }
 		Node *min();
 		Node *max();
 	private:
@@ -106,6 +106,13 @@ void List :: remove(int val)
 		}
 		cout << "Impossibile cancellare il nodo, Nodo non trovato." << endl;
 	}
+}
+	
+bool List :: isEmpty()
+{
+	if(head == NULL)
+		return true;
+	return false;
 }
 
 void List :: search(int val)

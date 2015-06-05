@@ -28,8 +28,10 @@ class List
 		void remove(int val);
 		void printList();
 		void search(int val);
-		bool isEmpty() { return head == NULL; }
-		bool isFull() { return ( !isEmpty() ); }
+		Node *max();
+		Node *min();
+		bool isEmpty();
+		bool isFull() { return !(isEmpty()); }
 	private:
 		Node *head;
 };
@@ -51,6 +53,13 @@ List :: ~List()
 	delete tmp;
 }
 
+bool List :: isEmpty()
+{
+	if(head == NULL)
+		return true;
+	return false;
+}
+	
 void List :: insert(int val)
 {
 	if(head == NULL)
