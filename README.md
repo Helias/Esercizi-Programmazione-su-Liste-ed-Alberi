@@ -13,6 +13,8 @@ In questa repository ho messo tutti gli esercizi relativi a liste ed alberi
 
 - Lista ordinata
 
+- Pila
+
 ### Alberi
 
 Work in progress...
