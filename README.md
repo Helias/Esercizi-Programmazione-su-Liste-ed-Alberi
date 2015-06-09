@@ -16,6 +16,8 @@ In questa repository ho messo tutti gli esercizi relativi a liste ed alberi
 - [Pila](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Liste/Pila%20%28stack%29.cpp)
 - [Coda](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Liste/Coda.cpp)
 
+## [Liste (template)](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/tree/master/Liste%20(template))
+
 ### Alberi
 
 Work in progress...
