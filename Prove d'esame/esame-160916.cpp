@@ -3,6 +3,8 @@
 #include <iostream>
 using namespace std;
 
+/* =========================================================== */
+
 template <class H> class StackNode
 {
     StackNode<H> *prev, *next;
@@ -22,6 +24,8 @@ public:
     void setPrev(StackNode<H> *prev){ this->prev = prev; }
     void setNext(StackNode<H> *next){ this->next = next; }
 };
+
+/* =========================================================== */
 
 template <class H> class Stack
 {
@@ -68,7 +72,7 @@ public:
         if(n){
             StackNode<H> *tmp = header->getNext();
             while(tmp != trailer){
-                cout << *tmp->getKey();
+                cout << *tmp->getKey() << endl;
                 tmp = tmp->getNext();
             }
             cout << endl;
@@ -77,6 +81,9 @@ public:
 
     int isEmpty(){ return n == 0; }
 };
+
+/* =========================================================== */
+/* ====================== CLASSE Matrix ====================== */
 
 class Matrix
 {
@@ -92,12 +99,13 @@ public:
         this->id = id;
     }
 
-    void print(){ cout << "[" << rows  << " x " << cols << "]"; }
-
     int getId(){ return id; }
     int getRows(){ return rows; }
     int getCols(){ return cols; }
 };
+
+/* =========================================================== */
+/* ===================== CLASSE TreeNode ===================== */
 
 template <class H> class TreeNode
 {
@@ -122,10 +130,23 @@ public:
     void setKey(H *key){ if(key) this->key = key; }
 };
 
+/* =========================================================== */
+/* ======================== OVERLOADINGS ===================== */
+
 int operator<(Matrix a, Matrix b)
 {
-
+    return a.getId() < b.getId() ? 1 : 0;
 }
+
+ostream& operator<<(ostream &out, Matrix& obj)
+{
+    out << "[" << obj.getRows() << " x "
+               << obj.getCols() << "]";
+    return out;
+}
+
+/* =========================================================== */
+/* ====================== CLASSE BSTree ====================== */
 
 template <class H> class BSTree
 {
@@ -239,17 +260,25 @@ public:
 
     void print()
     {
+        cout << "\nStampo albero delle matrici (inOrder): " << endl;
         for(H *it = begin(); it; it = next())
-            cout << *it << " ";
+            cout << *it << endl;
         cout << endl;
+    }
+
+    void postOrder(){
+
     }
 
 };
 
+/* ========================================================= */
+
 template <class H> class MMultiply
 {
     string s;
-    Stack< Matrix > *stMat;
+    Stack< Matrix > *matParsed;
+    BSTree< Matrix > *bt;
 
     int checkMatrices(Matrix& a, Matrix& b)
     {
@@ -259,7 +288,8 @@ template <class H> class MMultiply
 public:
     MMultiply(){
         s = "NULL";
-        stMat = new Stack< Matrix >();
+        matParsed = new Stack< Matrix >();
+        bt = new BSTree< Matrix >();
     }
 
     void parse(string s)
@@ -272,7 +302,6 @@ public:
 
         bool wellformed = true,
              popped = false;
-
         H *ch = NULL,
           *pre = NULL;
 
@@ -282,6 +311,8 @@ public:
             cols,
             matrices = 0,
             index = 0;
+
+
 
         Stack< Matrix > *mat = new Stack< Matrix >();
 
@@ -306,17 +337,19 @@ public:
                     Matrix *b = mat->pop();
                     Matrix *a = mat->pop();
 
-                    stMat->push(*a);
-                    stMat->push(*b);
+                    matParsed->push(*a);
+                    matParsed->push(*b);
 
-
-                    a->print();
+                    cout << *a;
                     cout << " x ";
-                    b->print();
+                    cout << *b;
                     cout << endl;
 
                     if (checkMatrices(*a, *b)){
-                        mat->push(Matrix(a->getRows(), b->getCols(), index++));
+                        Matrix *tmp = new Matrix(a->getRows(), b->getCols(), index++);
+                        mat->push(*tmp);
+                        if(l->isEmpty())
+                            matParsed->push(*tmp);
                     }else wellformed = false;
                 }
 
@@ -367,8 +400,11 @@ public:
 
     void makeTree()
     {
-        BSTree<H> *b = new BSTree<H>();
+        while(!matParsed->isEmpty()){
+            bt->ins(*matParsed->pop());
+        }
 
+        bt->print();
     }
 };
 
@@ -376,4 +412,6 @@ int main()
 {
     MMultiply<char> *m = new MMultiply<char>();
     m->parse("(([3x9]x[9x5])x([5x7]x([7x2]x[2x3])))");
+
+    m->makeTree();
 }
