@@ -5,7 +5,7 @@ using namespace std;
 
 /* =========================================================== */
 /* =================== CLASSE StackNode ====================== */
-
+// Classe nodo relativa allo stack
 
 template <class H> class StackNode
 {
@@ -110,7 +110,7 @@ public:
 
 ostream& operator<<(ostream &out, Matrix& obj)
 {
-    out << "[" << obj.getRows() << " x "
+    out << "[" << obj.getRows() << "x"
                << obj.getCols() << "]";
     return out;
 }
@@ -123,23 +123,27 @@ template <class H> class TreeNode
 {
     TreeNode<H> *left, *right, *parent;
     H *key;
+    int color;
 
 public:
     TreeNode(H *key = NULL)
     {
         this->key = key ? new H(*key) : NULL;
         left = right = parent = NULL;
+        color = 0;
     }
 
     TreeNode<H>* getLeft(){ return left; }
     TreeNode<H>* getRight(){ return right; }
     TreeNode<H>* getParent(){ return parent; }
     H* getKey(){ if(key) return new H(*key); }
+    int getColor(){ return color; }
 
     void setLeft(TreeNode<H> *left){ this->left = left; }
     void setRight(TreeNode<H> *right){ this->right = right; }
     void setParent(TreeNode<H> *parent){ this->parent = parent; }
     void setKey(H *key){ if(key) this->key = key; }
+    void setColor(int color){ this->color = color; }
 };
 
 /* =========================================================== */
@@ -148,69 +152,12 @@ public:
 template <class H> class BSTree
 {
     TreeNode<H> *root, *current;
-    int n;
+    int n, mulC;
 
-    TreeNode<H>* _search(H x)
+
+    // Procedura di stampa postorder.
+    void _printTree(TreeNode<H> *x)
     {
-        if(!root) return NULL;
-        TreeNode<H> *tmp = root;
-        while(tmp && *tmp->getKey() != x)
-            tmp = x->getRows() == *tmp->getKey()->getRows() ? tmp->getLeft() : tmp->getRight();
-        return tmp;
-    }
-
-    TreeNode<H>* _minimum(TreeNode<H> *x)
-    {
-        if(!x) return NULL;
-        TreeNode<H> *tmp = x;
-        while(tmp->getLeft()) tmp = tmp->getLeft();
-        return tmp;
-    }
-
-    TreeNode<H>* _succ(TreeNode<H> *x)
-    {
-        if(!x) return NULL;
-        if(x->getRight()) return _minimum(x->getRight());
-
-        TreeNode<H> *tmp = x, *par = x->getParent();
-        while(par && par->getRight() == tmp){
-            tmp = par;
-            par = par->getParent();
-        }
-        return par;
-    }
-
-    void _del(TreeNode<H> *tmp)
-    {
-        n--;
-
-        if(!tmp->getLeft() && !tmp->getRight()){
-            TreeNode<H> *par = tmp->getParent();
-            if(!par) root = NULL;
-            else if(par->getRight() == tmp) par->setRight(NULL);
-            else par->setLeft(NULL);
-            delete tmp;
-            return;
-        }
-
-        if(tmp->getLeft() && tmp->getRight()){
-            TreeNode<H> *s = _succ(tmp);
-            tmp->setKey(s->getKey());
-            _del(s);
-            return;
-        }
-
-        TreeNode<H> *par = tmp->getParent(), *son = tmp->getRight();
-
-        if(!son) son = tmp->getLeft();
-        if(!par) root = son;
-        else if(par->getRight() == tmp) par->setRight(son);
-        else par->setLeft(son);
-        son->setParent(par);
-        delete tmp;
-    }
-
-    void _printTree(TreeNode<H> *x){
         if(x != NULL){
             _printTree(x->getLeft());
             _printTree(x->getRight());
@@ -218,6 +165,45 @@ template <class H> class BSTree
         }
     }
 
+    TreeNode<H>* _getRoot(){ return root; }
+
+    // Questo metodo stampa la sequenza di matrici compl. parentesizzate.
+    void _printSeq(TreeNode<H> *tmp)
+    {
+        if(tmp != NULL){
+            if(tmp->getRight() && tmp->getLeft())
+                cout << "(";
+
+            tmp->setColor(1);
+
+            _printSeq(tmp->getLeft());
+            _printSeq(tmp->getRight());
+
+            if(!tmp->getRight() && !tmp->getLeft()){
+                cout << *tmp->getKey();
+                if(tmp == tmp->getParent()->getLeft())
+                    cout << "x";
+            }
+
+            if(tmp->getRight() && tmp->getLeft()){
+                cout << ")";
+                if(_getRoot()->getRight()->getColor() == 0){
+                    cout << "x";
+                }
+            }
+        }
+    }
+
+    void _resetColors(TreeNode<H> *tmp){
+        if(tmp != NULL){
+            tmp->setColor(0);
+            _resetColors(tmp->getLeft());
+            _resetColors(tmp->getRight());
+        }
+    }
+
+    // Questo metodo ricerca un possibile padre dell'oggetto da inserire
+    // nell'albero.
     TreeNode<H>* _searchIns(TreeNode<H> *tmp, H x)
     {
         if(tmp != NULL){
@@ -234,8 +220,32 @@ template <class H> class BSTree
         return NULL;
     }
 
+    void _incMult(int mulC){
+        this->mulC += mulC;
+    }
+
+    void _resetMult(){ mulC = 0; }
+
+    Matrix* _multiplyCalc(TreeNode<H> *tmp)
+    {
+        if(tmp != NULL){
+            tmp->setColor(1);
+
+            Matrix* a = _multiplyCalc(tmp->getLeft());
+            Matrix* b = _multiplyCalc(tmp->getRight());
+
+            if(!tmp->getLeft() && !tmp->getRight())
+                return tmp->getKey();
+
+            _incMult(a->getRows()*b->getRows()*b->getCols());
+
+            if(tmp->getLeft()->getColor() == 1)
+                return tmp->getKey();
+        }
+    }
+
 public:
-    BSTree() : root(NULL), n(0) {}
+    BSTree() : root(NULL), n(0), mulC(0) {}
 
     BSTree<H>* ins(H x)
     {
@@ -255,40 +265,30 @@ public:
         return this;
     }
 
-    // 124, 116, 470
-
-    BSTree<H>* del(H x)
-    {
-        if(n){
-            TreeNode<H> *tmp = _search(x);
-            if(tmp) _del(tmp);
-        }
-        return this;
-    }
-
-    H* begin()
-    {
-        current = _minimum(root);
-        return current ? current->getKey() : NULL;
-    }
-
-    H* next()
-    {
-        current = _succ(current);
-        return current ? current->getKey() : NULL;
-    }
-
     void printTree()
     {
-        cout << "\nStampa postOrder dell'albero: " << endl;
+        cout << "\nStampa postOrder dell'albero:\n";
         _printTree(root);
         cout << endl;
     }
 
     void printSeq()
     {
-
+        cout << "Stampa sequenza matrici completamente parentesizzata:\n";
+        _printSeq(root);
+        _resetColors(root);
+        cout << endl;
     }
+
+    int multiplyCalc()
+    {
+        cout << "\nNumero di moltiplicazioni elementari: ";
+        _multiplyCalc(root);
+        int tmp = mulC;
+        _resetMult();
+        return tmp;
+    }
+
 };
 
 /* ========================================================= */
@@ -322,14 +322,13 @@ public:
 
         bool wellformed = true,
              popped = false;
+
         H *ch = NULL,
           *pre = NULL;
 
         int openBr = 0,
             closedBr = 0,
-            rows,
-            cols,
-            matrices = 0;
+            rows, cols;
 
         Stack< Matrix > *mat = new Stack< Matrix >();
 
@@ -350,7 +349,7 @@ public:
                 if(*pre != ']' && *pre != ')')
                     wellformed = false;
 
-                if(matrices > 1){
+                {
                     Matrix *b = mat->pop();
                     Matrix *a = mat->pop();
 
@@ -359,18 +358,16 @@ public:
 
                     cout << *a << " x " << *b << endl;
 
-                    if (checkMatrices(*a, *b)){
+                    if(checkMatrices(*a, *b)){
                         Matrix *tmp = new Matrix(a->getRows(), b->getCols());
                         mat->push(*tmp);
                         if(l->isEmpty())
                             matParsed->push(*tmp);
                     }else wellformed = false;
                 }
-
                 break;
 
             case '[':
-                matrices++;
                 ch = l->pop();
                 if(*ch >= 48 && *ch <= 57){
                     rows = *ch - 48;
@@ -389,7 +386,6 @@ public:
                 }else wellformed = false;
                 pre = ch;
                 break;
-
 
             case 'x':
                 if(*pre == ']' || *pre == ')'){
@@ -414,14 +410,13 @@ public:
 
     void makeTree()
     {
-        cout << "Stampa stack di matrici" << endl;
-        matParsed->print();
-
         while(!matParsed->isEmpty()){
             bt->ins(*matParsed->pop());
         }
 
         bt->printTree();
+        bt->printSeq();
+        cout << bt->multiplyCalc() << endl;
     }
 };
 
