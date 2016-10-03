@@ -4,6 +4,8 @@
 using namespace std;
 
 /* =========================================================== */
+/* =================== CLASSE StackNode ====================== */
+
 
 template <class H> class StackNode
 {
@@ -26,6 +28,8 @@ public:
 };
 
 /* =========================================================== */
+/* ==================== CLASSE Stack ========================= */
+/* Stack costruito mediante una lista doppiamente concatenata  */
 
 template <class H> class Stack
 {
@@ -89,23 +93,31 @@ class Matrix
 {
     int rows;
     int cols;
-    int id;
 
 public:
-    Matrix(int rows, int cols, int id)
+    Matrix(int rows, int cols)
     {
         this->rows = rows;
         this->cols = cols;
-        this->id = id;
     }
 
-    int getId(){ return id; }
     int getRows(){ return rows; }
     int getCols(){ return cols; }
 };
 
 /* =========================================================== */
+/* ===================== OVERLOADINGS ======================== */
+
+ostream& operator<<(ostream &out, Matrix& obj)
+{
+    out << "[" << obj.getRows() << " x "
+               << obj.getCols() << "]";
+    return out;
+}
+
+/* =========================================================== */
 /* ===================== CLASSE TreeNode ===================== */
+// Classe nodo per il BSTree
 
 template <class H> class TreeNode
 {
@@ -131,21 +143,6 @@ public:
 };
 
 /* =========================================================== */
-/* ======================== OVERLOADINGS ===================== */
-
-int operator<(Matrix a, Matrix b)
-{
-    return a.getId() < b.getId() ? 1 : 0;
-}
-
-ostream& operator<<(ostream &out, Matrix& obj)
-{
-    out << "[" << obj.getRows() << " x "
-               << obj.getCols() << "]";
-    return out;
-}
-
-/* =========================================================== */
 /* ====================== CLASSE BSTree ====================== */
 
 template <class H> class BSTree
@@ -158,7 +155,7 @@ template <class H> class BSTree
         if(!root) return NULL;
         TreeNode<H> *tmp = root;
         while(tmp && *tmp->getKey() != x)
-            tmp = x < *tmp->getKey() ? tmp->getLeft() : tmp->getRight();
+            tmp = x->getRows() == *tmp->getKey()->getRows() ? tmp->getLeft() : tmp->getRight();
         return tmp;
     }
 
@@ -213,6 +210,30 @@ template <class H> class BSTree
         delete tmp;
     }
 
+    void _printTree(TreeNode<H> *x){
+        if(x != NULL){
+            _printTree(x->getLeft());
+            _printTree(x->getRight());
+            cout << *(x->getKey()) << " " << endl;
+        }
+    }
+
+    TreeNode<H>* _searchIns(TreeNode<H> *tmp, H x)
+    {
+        if(tmp != NULL){
+            if( (x.getRows() == tmp->getKey()->getRows()
+                             && !tmp->getLeft() ) ||
+                (x.getCols() == tmp->getKey()->getCols()
+                             && !tmp->getRight() )) return tmp;
+
+            TreeNode<H> *leftNode = _searchIns(tmp->getLeft(), x);
+            TreeNode<H> *rightNode = _searchIns(tmp->getRight(), x);
+
+            return leftNode ? leftNode : rightNode;
+        }
+        return NULL;
+    }
+
 public:
     BSTree() : root(NULL), n(0) {}
 
@@ -226,16 +247,15 @@ public:
             return this;
         }
 
-        TreeNode<H> *tmp = root, *par = NULL;
-        while(tmp){
-            par = tmp;
-            tmp = x < *tmp->getKey() ? tmp->getLeft() : tmp->getRight();
-        }
+        TreeNode<H> *tmp = _searchIns(root, x);
+        if(x.getRows() == tmp->getKey()->getRows()) tmp->setLeft(nd);
+        else if(x.getCols() == tmp->getKey()->getCols()) tmp->setRight(nd);
 
-        x < *par->getKey() ? par->setLeft(nd) : par->setRight(nd);
-        nd->setParent(par);
+        nd->setParent(tmp);
         return this;
     }
+
+    // 124, 116, 470
 
     BSTree<H>* del(H x)
     {
@@ -258,27 +278,27 @@ public:
         return current ? current->getKey() : NULL;
     }
 
-    void print()
+    void printTree()
     {
-        cout << "\nStampo albero delle matrici (inOrder): " << endl;
-        for(H *it = begin(); it; it = next())
-            cout << *it << endl;
+        cout << "\nStampa postOrder dell'albero: " << endl;
+        _printTree(root);
         cout << endl;
     }
 
-    void postOrder(){
+    void printSeq()
+    {
 
     }
-
 };
 
 /* ========================================================= */
+/* ==================== Classe MMultiply =================== */
 
 template <class H> class MMultiply
 {
-    string s;
-    Stack< Matrix > *matParsed;
-    BSTree< Matrix > *bt;
+    string s; // stringa di default (accettata dopo il parse)
+    Stack< Matrix > *matParsed; // stack di matrici di una stringa accettata
+    BSTree< Matrix > *bt; // albero delle matrici
 
     int checkMatrices(Matrix& a, Matrix& b)
     {
@@ -309,10 +329,7 @@ public:
             closedBr = 0,
             rows,
             cols,
-            matrices = 0,
-            index = 0;
-
-
+            matrices = 0;
 
         Stack< Matrix > *mat = new Stack< Matrix >();
 
@@ -337,16 +354,13 @@ public:
                     Matrix *b = mat->pop();
                     Matrix *a = mat->pop();
 
-                    matParsed->push(*a);
                     matParsed->push(*b);
+                    matParsed->push(*a);
 
-                    cout << *a;
-                    cout << " x ";
-                    cout << *b;
-                    cout << endl;
+                    cout << *a << " x " << *b << endl;
 
                     if (checkMatrices(*a, *b)){
-                        Matrix *tmp = new Matrix(a->getRows(), b->getCols(), index++);
+                        Matrix *tmp = new Matrix(a->getRows(), b->getCols());
                         mat->push(*tmp);
                         if(l->isEmpty())
                             matParsed->push(*tmp);
@@ -367,7 +381,7 @@ public:
                             cols = *ch - 48;
                             ch = l->pop();
                             if(*ch == ']'){
-                                mat->push(Matrix(rows, cols, index++));
+                                mat->push(Matrix(rows, cols));
                             }
                             else wellformed = false;
                         }else wellformed = false;
@@ -400,13 +414,19 @@ public:
 
     void makeTree()
     {
+        cout << "Stampa stack di matrici" << endl;
+        matParsed->print();
+
         while(!matParsed->isEmpty()){
             bt->ins(*matParsed->pop());
         }
 
-        bt->print();
+        bt->printTree();
     }
 };
+
+/* ========================================================= */
+/* ======================== MAIN =========================== */
 
 int main()
 {
