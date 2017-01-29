@@ -1,9 +1,9 @@
 # Liste-ed-Alberi
 
-In questa repository ho messo tutti gli esercizi relativi a liste ed alberi
+In questa repository troverete diversi esercizi relativi a liste ed alberi
 
 
-### [Liste](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/tree/master/Liste)
+### [Liste](Liste)
 
 - [Lista semplicemente concatenata](Liste/listasemplice.cpp)
 - [Lista doppiamente concatenata](Liste/listadoppia.cpp)
