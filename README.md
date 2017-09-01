@@ -1,5 +1,4 @@
-# Liste-ed-Alberi
-
+# Programmazione 2
 In questa repository troverete diversi esercizi relativi a liste ed alberi
 
 
