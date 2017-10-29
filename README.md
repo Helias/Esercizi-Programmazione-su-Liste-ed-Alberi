@@ -1,25 +1,24 @@
-# Liste-ed-Alberi
+# Programmazione 2
+In questa repository troverete diversi esercizi relativi a liste ed alberi
 
-In questa repository ho messo tutti gli esercizi relativi a liste ed alberi
 
+### [Liste](Liste)
 
-### [Liste](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/tree/master/Liste)
+- [Lista semplicemente concatenata](Liste/listasemplice.cpp)
+- [Lista doppiamente concatenata](Liste/listadoppia.cpp)
 
-- [Lista semplicemente concatenata](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Liste/listasemplice.cpp)
-- [Lista doppiamente concatenata](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Liste/listadoppia.cpp)
+- [Lista circolare semplicemente concatenata](Liste/listasemplice%20circolare.cpp)
+- [Lista circolare doppiamente concatenata](Liste/listadoppia%20circolare.cpp)
 
-- [Lista circolare semplicemente concatenata](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Liste/listasemplice%20circolare.cpp)
-- [Lista circolare doppiamente concatenata](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Liste/listadoppia%20circolare.cpp)
+- [Lista ordinata](Liste/ListaOrdinata.cpp)
 
-- [Lista ordinata](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Liste/ListaOrdinata.cpp)
+- [Pila](Liste/Pila%20%28stack%29.cpp)
+- [Coda](Liste/Coda.cpp)
 
-- [Pila](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Liste/Pila%20%28stack%29.cpp)
-- [Coda](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Liste/Coda.cpp)
+## [Liste (template)](Liste%20(template))
 
-## [Liste (template)](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/tree/master/Liste%20(template))
+### [Alberi](Alberi)
 
-### [Alberi](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/tree/master/Alberi)
+[albero.cpp](Alberi/albero.cpp)
 
-[albero.cpp](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/blob/master/Alberi/albero.cpp)
-
-### [Prove d'esame](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/tree/master/Prove%20d%27esame)
+### [Prove d'esame](Prove%20d%27esame)
