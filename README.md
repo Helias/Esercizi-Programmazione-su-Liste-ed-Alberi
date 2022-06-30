@@ -1,6 +1,6 @@
 # Liste-ed-Alberi
 
-:warning: **APPUNTI DEL 2016** :warning:
+⚠️ **APPUNTI DEL 2016** ⚠️
 
 In questa repository ho messo tutti gli esercizi relativi a liste ed alberi
 
