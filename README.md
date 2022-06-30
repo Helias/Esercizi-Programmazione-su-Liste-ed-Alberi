@@ -1,7 +1,8 @@
 # Liste-ed-Alberi
 
-In questa repository ho messo tutti gli esercizi relativi a liste ed alberi
+:warning: **APPUNTI DEL 2016** :warning:
 
+In questa repository ho messo tutti gli esercizi relativi a liste ed alberi
 
 ### [Liste](https://github.com/Helias/Esercizi-Programmazione-su-Liste-ed-Alberi/tree/master/Liste)
 
